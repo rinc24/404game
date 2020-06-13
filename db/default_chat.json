@@ -1,0 +1,21 @@
+{
+    "chat_id": 0,
+    "in_game": false,
+    "type_game": "404",
+    "cards_sticky": true,
+    "deck_skin": "deck_eng",
+    "cards_to_hand": 6,
+    "number_of_decks": 2,
+    "move": 0,
+    "who_move": 0,
+    "who_will_move": 0,
+    "messages_to_delete": [],
+    "used": [],
+    "not_used": [],
+    "games_count": 0,
+    "players": [],
+    "winners": [],
+    "users": {},
+    "want_new_game": [],
+    "chosen_suit": ""
+}

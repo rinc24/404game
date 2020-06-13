@@ -1,0 +1,13 @@
+{
+    "rating": 0,
+    "want_fold": false,
+    "hand": [],
+    "move_card_count": 0,
+    "take_card_count": 0,
+    "id": 0,
+    "is_bot": false,
+    "first_name": null,
+    "username": null,
+    "last_name": null,
+    "language_code": "ru"
+}

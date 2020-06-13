@@ -1,0 +1,36 @@
+{
+    "in_game": false,
+    "type_game": "404",
+    "move": 0,
+    "who_move": 0,
+    "chat_id": 0,
+    "cards_sticky": true,
+    "who_will_move": 0,
+    "messages_to_delete": [
+        7670,
+        7669,
+        7672,
+        7671
+    ],
+    "used": [],
+    "not_used": [],
+    "games_count": 0,
+    "players": [],
+    "winners": [],
+    "want_new_game": [],
+    "chosen_suit": "",
+    "users": {
+        "184207876": {
+            "rating": 0,
+            "want_fold": false,
+            "hand": [],
+            "take_card_count": 0,
+            "id": 184207876,
+            "is_bot": false,
+            "first_name": "\u03b2\u03b1\u03b4u\u03bc",
+            "username": "romanovinc",
+            "last_name": null,
+            "language_code": "ru"
+        }
+    }
+}
