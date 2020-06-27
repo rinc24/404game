@@ -125,7 +125,7 @@ class Game:
         gen_mention
         delete_bot_messages
         penalty
-        add_winners_list
+        winners_list
         end_of_game
         new_winner
     """
@@ -496,13 +496,8 @@ class Game:
         else:
             return self.is_it_sticky()
 
-    def am_i_admin(self):
-        for i in bot.get_chat_administrators(self.chat_id):
-            if i.user.username == NAME_BOT:
-                return True
-        return False
-
     def can_take(self, user_id=None):
+        """Returns True if the player can take a card from the not used deck."""
         if user_id is None:
             user_id = self.user_id
         if self.get_last_card()[0] in ("2", "6"):
@@ -514,6 +509,7 @@ class Game:
         return False
 
     def can_end_move(self):
+        """Returns True if the player can complete the move."""
         if self.get_move_card_count() != 0:
             if self.get_last_card()[0] == "J":
                 last_card = self.pre_joker_card()
@@ -526,16 +522,19 @@ class Game:
         return False
 
     def next_player(self, player_id):
+        """Returns the ID of the next player on the list."""
         if player_id == self.players[-1]:
             return self.players[0]
         else:
             return self.players[self.players.index(player_id) + 1]
 
     def next_next_player(self, player_id):
+        """Returns the ID of the next next player on the list."""
         player_id = self.next_player(player_id)
         return self.next_player(player_id)
 
     def end_move(self, chosen_suit=""):
+        """The method of completing a player's move."""
         self.next_move()
         self.delete_bot_messages()
         self.chosen_suit = chosen_suit
@@ -554,6 +553,7 @@ class Game:
                          reply_markup=markup, parse_mode="HTML", disable_notification=True)
 
     def gen_keyboard_in_game_selective(self):
+        """Returns the current player's personal keyboard."""
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=6, selective=True)
         user_id = self.who_move
         hand = self.users[str(user_id)].hand
@@ -571,6 +571,7 @@ class Game:
         return markup
 
     def gen_keyboard_choice_suit(self):
+        """Returns the keyboard with the suits for selection."""
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True, selective=True)
         user_id = self.who_move
         keyboard = [CARD_SUITS, [key for key in KEYBOARD_IN_GAME[0]], [key for key in KEYBOARD_IN_GAME[1]]]
@@ -584,12 +585,14 @@ class Game:
         return markup
 
     def gen_mention(self, user_id=None):
+        """Returns a mention string by API format. Parse mode: HTML."""
         if user_id is None:
             user_id = self.user_id
         name = self.get_player_short_name(user_id)
         return f'<a href="tg://user?id={user_id}">{name}</a>'
 
     def delete_bot_messages(self):
+        """Delete service and intermediate messages."""
         for message_id in self.messages_to_delete:
             try:
                 bot.delete_message(self.chat_id, message_id)
@@ -598,6 +601,7 @@ class Game:
         self.messages_to_delete = []
 
     def penalty(self, card):
+        """A method of handing out penalties."""
         if card[0] == "J":
             card = self.pre_joker_card()
         card_rank = card[0]
@@ -626,7 +630,8 @@ class Game:
         elif card_rank in ["2", "6"]:
             pass
 
-    def add_winners_list(self):
+    def winners_list(self):
+        """Returns the list of winners with their rating."""
         winners_list = ""
         for user_id in self.winners:
             index = self.winners.index(user_id) + 1
@@ -645,9 +650,10 @@ class Game:
         return winners_list
 
     def end_of_game(self):
+        """The method of finishing the game."""
         self.winners.append(self.players.pop())
         answer = f"Игра закончилась {how_many_move(self.move - 1)}\n"
-        answer += self.add_winners_list()
+        answer += self.winners_list()
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         markup.row("Новая игра")
         bot.send_message(self.chat_id, answer, reply_markup=markup)
@@ -664,6 +670,7 @@ class Game:
         self.chosen_suit = ""
 
     def new_winner(self):
+        """A method that turns a player into a winner."""
         self.winners.append(self.user_id)
         self.players.remove(self.user_id)
         bot.send_message(self.chat_id,
@@ -676,6 +683,7 @@ class Game:
 
 
 def how_many_cards(num):
+    """Helps to form a linguistically correct report about a player's penalty."""
     if num == 0:
         return "пропускает ход."
     elif num == 1:
@@ -687,6 +695,7 @@ def how_many_cards(num):
 
 
 def how_many_move(num):
+    """Helps to form a linguistically correct report on the move number on which the player wins."""
     if num == 0:
         return "без единого хода."
     elif num == 1:
@@ -698,12 +707,14 @@ def how_many_move(num):
 
 
 def gen_keyboard_in_game_for_any():
+    """Returns the keyboard used by all players without cards."""
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     markup.row(*KEYBOARD_IN_GAME[1])
     return markup
 
 
 def gen_keyboard_new_game():
+    """Returns the keyboard used to create the new game."""
     markup = types.InlineKeyboardMarkup()
     keyboard = KEYBOARD_NEW_GAME
     for row in keyboard:
@@ -713,6 +724,7 @@ def gen_keyboard_new_game():
 
 
 def is_it_card(card):
+    """Checks if the text matches the card."""
     if type(card) == str and card in DECK54:
         return True
     else:
@@ -720,6 +732,8 @@ def is_it_card(card):
 
 
 def am_i_admin(message):
+    """Returns True if the bot is the chat administrator.
+    The bot must be the administrator to delete service and intermediate messages."""
     for i in bot.get_chat_administrators(message.chat.id):
         if i.user.username == NAME_BOT:
             return True
