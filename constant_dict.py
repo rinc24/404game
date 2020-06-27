@@ -1,4 +1,4 @@
-deck_eng = {'10♦️': 'CAACAgIAAxkBAAILGF6ctt4WYPMGOF1FhS6MfGsyfh8GAAKkAAMEyvoK3XK13-5rgBUYBA',
+DECK_ENG = {'10♦️': 'CAACAgIAAxkBAAILGF6ctt4WYPMGOF1FhS6MfGsyfh8GAAKkAAMEyvoK3XK13-5rgBUYBA',
             '2♦️': 'CAACAgIAAxkBAAILFl6cttlY8Zvd_A9njnLOMg0p6kuuAAKjAAMEyvoKnfxNJLQS7x4YBA',
             '3♦️': 'CAACAgIAAxkBAAILFF6cttjZziYQg_A_N-PLA23ZlCN8AAKiAAMEyvoK8pNd6KRyOKEYBA',
             '4♦️': 'CAACAgIAAxkBAAILEl6cttbI-53vsOWLFooqBfddKZfpAAKhAAMEyvoKSv2XRgSPHrEYBA',
@@ -53,13 +53,14 @@ deck_eng = {'10♦️': 'CAACAgIAAxkBAAILGF6ctt4WYPMGOF1FhS6MfGsyfh8GAAKkAAMEyvo
             'J🔴': 'CAACAgIAAxkBAAILHF6ctuFQXDPDxSSoirpUtpyWLmhKAAKmAAMEyvoK89aaA0CJswoYBA',
             'J⚫️': 'CAACAgIAAxkBAAILGl6ctuB4pwZ7tyIva3cayElMmvALAAKlAAMEyvoKQygBGasMVHQYBA'}
 
-black_suits = ["⚫️", "♠️", "♣️"]
-red_suits = ["J🔴", "♥️", "♦️"]
-skins = {"deck_eng": deck_eng}
-deck54 = [i for i in deck_eng.keys()]
-deck36 = [i for i in deck_eng.keys() if i[0] not in ['2', '3', '4', '5', 'J']]
-players_range = range(2, 9)
-penalty_dict_404 = {'Т♦️': 0,
+CARD_SUITS = ["♥️", "♠️", "♣️", "♦️"]
+BLACK_SUITS = ["⚫️", "♠️", "♣️"]
+RED_SUITS = ["J🔴", "♥️", "♦️"]
+SKINS = {"deck_eng": DECK_ENG}
+DECK54 = [i for i in DECK_ENG.keys()]
+DECK36 = [i for i in DECK_ENG.keys() if i[0] not in ['2', '3', '4', '5', 'J']]
+PLAYERS_RANGE = range(2, 9)
+PENALTY_DICT_404 = {'Т♦️': 0,
                     'Т♣️': 0,
                     'Т♠️': 0,
                     'Т♥️': 0,
@@ -77,7 +78,7 @@ penalty_dict_404 = {'Т♦️': 0,
                     '7♥️': 2,
                     'В♠️': 3,
                     'К♠️': 5}
-penalty_dict_101 = {'Т♦️': 0,
+PENALTY_DICT_101 = {'Т♦️': 0,
                     'Т♣️': 0,
                     'Т♠️': 0,
                     'Т♥️': 0,
@@ -87,15 +88,13 @@ penalty_dict_101 = {'Т♦️': 0,
                     '7♥️': 2,
                     'К♠️': 5}
 
-keyboard_new_game = [{"Играю!": "/go", "Передумал..": "/pass"},
+KEYBOARD_NEW_GAME = [{"Играю!": "/go", "Передумал..": "/pass"},
                      {"Старт!": "/start_game"}]
 
-keyboard_in_game = [["Конец хода", "Беру"],
+KEYBOARD_IN_GAME = [["Конец хода", "Беру"],
                     ["Сдаюсь", "Новая игра"]]
 
-card_suits = ["♥️", "♠️", "♣️", "♦️"]
-
-help_text = f"Тут будут правила игры.\n" \
+HELP_TEXT = f"Тут будут правила игры.\n" \
             f"Пока для справки:\n" \
             f"2, 6 - надо крыть.\n" \
             f"3, 5 - ничего.\n" \
@@ -107,7 +106,7 @@ help_text = f"Тут будут правила игры.\n" \
             f"J - дублирует карту под собой и ее действие.\n" \
             f"Черный Joker можно положить только на черные масти и наоборт.\nДля красного также."
 
-test_deck = ["2\u2665\ufe0f",
+TEST_DECK = ["2\u2665\ufe0f",
              "2\u2666\ufe0f",
              "4\u2663\ufe0f",
              "4\u2666\ufe0f",

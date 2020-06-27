@@ -9,7 +9,10 @@
     "move": 3,
     "who_move": 184207876,
     "who_will_move": 184207876,
-    "messages_to_delete": [],
+    "messages_to_delete": [
+        5656,
+        5657
+    ],
     "used": [
         "\u041a\u2666\ufe0f",
         "\u0412\u2666\ufe0f",
@@ -17,6 +20,10 @@
         "\u0412\u2660\ufe0f",
         "J\u26ab\ufe0f",
         "J\ud83d\udd34",
+        "J\u26ab\ufe0f",
+        "4\u2660\ufe0f",
+        "4\u2663\ufe0f",
+        "6\u2663\ufe0f",
         "J\u26ab\ufe0f"
     ],
     "not_used": [
@@ -101,9 +108,7 @@
         "7\u2666\ufe0f",
         "9\u2663\ufe0f",
         "4\u2666\ufe0f",
-        "\u041a\u2660\ufe0f",
-        "\u0422\u2663\ufe0f",
-        "6\u2663\ufe0f"
+        "\u041a\u2660\ufe0f"
     ],
     "games_count": 3,
     "players": [
@@ -111,7 +116,9 @@
         1123639174
     ],
     "winners": [],
-    "want_new_game": [],
+    "want_new_game": [
+        1123639174
+    ],
     "chosen_suit": "",
     "users": {
         "184207876": {
@@ -121,21 +128,17 @@
                 "2\u2665\ufe0f",
                 "2\u2666\ufe0f",
                 "4\u2660\ufe0f",
-                "4\u2660\ufe0f",
-                "4\u2663\ufe0f",
                 "4\u2666\ufe0f",
                 "4\u2666\ufe0f",
                 "5\u2663\ufe0f",
                 "6\u2660\ufe0f",
                 "6\u2660\ufe0f",
                 "6\u2663\ufe0f",
-                "6\u2663\ufe0f",
                 "6\u2665\ufe0f",
                 "6\u2666\ufe0f",
                 "7\u2660\ufe0f",
                 "7\u2663\ufe0f",
                 "8\u2666\ufe0f",
-                "J\u26ab\ufe0f",
                 "J\u26ab\ufe0f",
                 "J\ud83d\udd34",
                 "\u0412\u2660\ufe0f",
@@ -148,7 +151,7 @@
                 "\u0422\u2660\ufe0f",
                 "\u0422\u2666\ufe0f"
             ],
-            "move_card_count": 0,
+            "move_card_count": 4,
             "take_card_count": 0,
             "id": 184207876,
             "is_bot": false,
@@ -184,7 +187,9 @@
                 "\u041a\u2665\ufe0f",
                 "\u0422\u2666\ufe0f",
                 "8\u2663\ufe0f",
-                "5\u2666\ufe0f"
+                "5\u2666\ufe0f",
+                "6\u2663\ufe0f",
+                "\u0422\u2663\ufe0f"
             ],
             "move_card_count": 0,
             "take_card_count": 0,
@@ -193,7 +198,7 @@
             "first_name": "\u0418\u0433\u0440\u043e\u043a",
             "username": "player1_404",
             "last_name": "1",
-            "language_code": "ru"
+            "language_code": null
         }
     }
 }

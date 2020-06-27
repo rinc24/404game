@@ -1,7 +1,7 @@
 # !/usr/bin/env python
 # -*- coding: utf-8 -*-
 import telebot
-from config import token, proxy, path_db, path_log, name_bot
+from config import TOKEN, PROXY, PATH_DB, PATH_LOG, NAME_BOT
 from constant_dict import *
 from datetime import datetime
 import json
@@ -10,29 +10,37 @@ from random import shuffle
 from os.path import exists
 
 
-bot = telebot.TeleBot(token)
-telebot.apihelper.proxy = {'https': proxy}
+bot = telebot.TeleBot(TOKEN)
+telebot.apihelper.proxy = {'https': PROXY}
 
 
 def convert_time(time_unix):
     return datetime.utcfromtimestamp(time_unix + 18000).strftime('%d.%m.%Y %H:%M:%S')
 
 
-with open(f"{path_db}default_user.json") as file:
+with open(f"{PATH_DB}default_user.json") as file:
     default_user = json.load(file)
 
-with open(f"{path_db}default_chat.json") as file:
+with open(f"{PATH_DB}default_chat.json") as file:
     default_chat = json.load(file)
 
 
 def logger(chat_id, text, user_name=""):
-    with open(f"{path_log}{chat_id}", "a") as log:
+    with open(f"{PATH_LOG}{chat_id}", "a") as log:
         log.write(datetime.now().strftime("%d.%m.%Y %H:%M:%S ") + user_name + ": " + text + "\n")
 
 
 class User:
-    """Создан специально для игры 404"""
+    """This is User Class
+    Methods:
+        dict
+        update_user
+    """
     def __init__(self, user):
+        """
+        :param user: Dict from JSON.
+        :return: User object.
+        """
         for key in default_user.keys():
             if key not in user.keys():
                 user[key] = default_user[key]
@@ -76,7 +84,51 @@ class User:
 
 
 class Game:
-    """Создан специально для игры 404"""
+    """This is Game Class
+    Methods:
+        dump
+        can_move
+        next_move
+        new_game
+        go
+        pass_game
+        start_game
+        fold
+        used_to_not_used
+        take_card
+        get_penalty_cards
+        get_last_card
+        get_hand
+        get_rating
+        get_take_card_count
+        get_move_card_count
+        get_first_name
+        get_last_name
+        get_username
+        get_player_full_name
+        get_player_short_name
+        players_list
+        users_list
+        pre_joker_card
+        pre_used_card
+        is_it_relevant
+        is_it_sticky
+        is_it_ok_card
+        am_i_admin
+        can_take
+        can_end_move
+        next_player
+        next_next_player
+        end_move
+        gen_keyboard_in_game_selective
+        gen_keyboard_choice_suit
+        gen_mention
+        delete_bot_messages
+        penalty
+        add_winners_list
+        end_of_game
+        new_winner
+    """
     def __init__(self, message: types.Message, from_user=None):
         if from_user is None:
             from_user = message.from_user
@@ -84,10 +136,10 @@ class Game:
         self.user_id = from_user.id
         self.message_id = message.message_id
         self.text = message.text
-        if not exists(f"{path_db}{self.chat_id}.json"):
+        if not exists(f"{PATH_DB}{self.chat_id}.json"):
             chat = default_chat
         else:
-            with open(f"{path_db}{self.chat_id}.json") as db:
+            with open(f"{PATH_DB}{self.chat_id}.json") as db:
                 chat = json.load(db)
         for key in default_chat.keys():
             if key not in chat.keys():
@@ -114,11 +166,12 @@ class Game:
         self.chosen_suit = chat["chosen_suit"]
         self.users = {user: User(chat["users"][user]) for user in chat["users"]}
         if str(self.user_id) not in self.users:
-            with open(f"{path_db}default_user.json") as db:
+            with open(f"{PATH_DB}default_user.json") as db:
                 self.users.update({str(self.user_id): User(json.load(db))})
         self.users[str(self.user_id)].update_user(from_user.__dict__)
 
     def dump(self):
+        """Writes the Game object as JSON file to disk."""
         chat = {
             "chat_id": self.chat_id,
             "in_game": self.in_game,
@@ -142,10 +195,11 @@ class Game:
         }
         for user_id in self.users:
             chat["users"].update({user_id: self.users[user_id].dict()})
-        with open(f"{path_db}{self.chat_id}.json", "w+") as db:
+        with open(f"{PATH_DB}{self.chat_id}.json", "w+") as db:
             json.dump(chat, db, indent=4)
 
     def can_move(self, user_id=None):
+        """Returns True if a player can make a move."""
         if user_id is None:
             user_id = self.user_id
         if self.who_move == user_id:
@@ -154,6 +208,7 @@ class Game:
             return False
 
     def next_move(self):
+        """Move on to the next player."""
         self.users[str(self.who_move)].move_card_count = 0
         self.users[str(self.who_move)].take_card_count = 0
         self.users[str(self.who_move)].want_fold = 0
@@ -163,6 +218,7 @@ class Game:
         self.who_move = self.who_will_move
 
     def new_game(self):
+        """Preparation and creation of a new game."""
         self.in_game = False
         self.move = 0
         self.who_move = 0
@@ -181,18 +237,21 @@ class Game:
         self.delete_bot_messages()
 
     def go(self):
+        """Adding a player to the list of players of a new game."""
         if self.user_id not in self.players:
             self.players.append(self.user_id)
 
     def pass_game(self):
+        """Removal of a player from the list of players of a new game."""
         if self.user_id in self.players:
             self.players.remove(self.user_id)
 
     def start_game(self):
+        """Start a new game."""
         if self.type_game == "404":
-            self.not_used = [_ for _ in deck54 * self.number_of_decks]
+            self.not_used = [_ for _ in DECK54 * self.number_of_decks]
         else:
-            self.not_used = [_ for _ in deck36]
+            self.not_used = [_ for _ in DECK36]
         shuffle(self.not_used)
         self.in_game = True
         self.move = 1
@@ -206,6 +265,7 @@ class Game:
         self.users[str(self.who_move)].move_card_count += 1
 
     def fold(self):
+        """Called when a player wants to give up and leave the current game."""
         for card in self.users[str(self.user_id)].hand:
             self.not_used.append(card)
         shuffle(self.not_used)
@@ -218,6 +278,7 @@ class Game:
         self.users[str(self.user_id)].take_card_count = 0
 
     def used_to_not_used(self):
+        """Called when the unused deck ran out of cards. The discarded deck is mixed and reused."""
         self.not_used = [i for i in self.used]
         new_used = [self.used[-1]]
         while self.used[-1][0] == "J":
@@ -229,6 +290,7 @@ class Game:
         bot.send_message(self.chat_id, "<b><i>Перемешали колоду.</i></b>", disable_notification=True, parse_mode="HTML")
 
     def take_card(self):
+        """The player takes a card from an unused deck when there is nothing to make a move."""
         if len(self.not_used) != 0:
             self.users[str(self.user_id)].hand.append(self.not_used.pop())
         elif len(self.used) > 1:
@@ -237,6 +299,10 @@ class Game:
         self.users[str(self.user_id)].take_card_count += 1
 
     def get_penalty_cards(self, user_id, amount):
+        """A method that implements a penalty.
+        To enter: player, number of penalty cards.
+        Out: How many cards a player has taken
+            (usually equal to the number of penalty cards, but may be less if I have run out of deck)."""
         count = 0
         if user_id is None:
             user_id = self.user_id
@@ -253,32 +319,38 @@ class Game:
         return count
 
     def get_last_card(self):
+        """Returns the card that was placed last."""
         if len(self.used) != 0:
             return self.used[-1]
         else:
             return "card"
 
     def get_hand(self, user_id=None):
+        """Returns the list of cards in the player's hand."""
         if user_id is None:
             user_id = self.user_id
         return self.users[str(user_id)].hand
 
     def get_rating(self, user_id=None):
+        """Returns the player's rating."""
         if user_id is None:
             user_id = self.user_id
         return self.users[str(user_id)].rating
 
     def get_take_card_count(self, user_id=None):
+        """Returns the number of cards taken by the player."""
         if user_id is None:
             user_id = self.user_id
         return self.users[str(user_id)].take_card_count
 
     def get_move_card_count(self, user_id=None):
+        """Returns the number of cards moved by the player."""
         if user_id is None:
             user_id = self.who_move
         return self.users[str(user_id)].move_card_count
 
     def get_first_name(self, user_id=None):
+        """Returns the player's first name."""
         if user_id is None:
             user_id = self.user_id
         first_name = self.users[str(user_id)].first_name
@@ -288,6 +360,7 @@ class Game:
             return ""
 
     def get_last_name(self, user_id=None):
+        """Returns the player's last name."""
         if user_id is None:
             user_id = self.user_id
         last_name = self.users[str(user_id)].last_name
@@ -297,6 +370,7 @@ class Game:
             return ""
 
     def get_username(self, user_id=None):
+        """Returns the player's username."""
         if user_id is None:
             user_id = self.user_id
         username = self.users[str(user_id)].username
@@ -306,6 +380,7 @@ class Game:
             return ""
 
     def get_player_full_name(self, user_id=None):
+        """Returns the player's full name."""
         if user_id is None:
             user_id = self.user_id
         self.users[str(user_id)].rating = round(self.users[str(user_id)].rating, 2)
@@ -316,11 +391,13 @@ class Game:
         return f"{first_name}{last_name}{username}R:{rating}"
 
     def get_player_short_name(self, user_id=None):
+        """Returns the player's short name."""
         if user_id is None:
             user_id = self.user_id
         return self.get_player_full_name(user_id).split()[0]
 
-    def add_players_list(self):
+    def players_list(self):
+        """Returns the list of players."""
         players_list = ""
         for user_id in self.players:
             index = self.players.index(user_id) + 1
@@ -333,7 +410,8 @@ class Game:
             players_list += string
         return players_list
 
-    def add_users_list(self):
+    def users_list(self):
+        """Returns the list of users."""
         users_list = ""
         for user_id in self.users.keys():
             player_full_name = self.get_player_full_name(user_id)
@@ -342,6 +420,7 @@ class Game:
         return users_list
 
     def pre_joker_card(self):
+        """Returns the card that lies under the joker."""
         joker_card = "card"
         for card in self.used[::-1]:
             if card[0] == "J":
@@ -351,9 +430,11 @@ class Game:
         return joker_card
 
     def pre_used_card(self, card):
+        """Returns the card that was placed before the last one."""
         return self.used[(len(self.used)) - self.used[::-1].index(card) - 2]
 
     def is_it_relevant(self):
+        """The condition is checked to see if the card used by the player is suitable. Returns the boolean value."""
         last_card = self.get_last_card()
         new_card = self.text
         last_card_rank = last_card[0]
@@ -364,8 +445,8 @@ class Game:
         new_card_rank = new_card[0]
         new_card_suit = new_card[-2:4]
         ranks = [last_card_rank, new_card_rank]
-        if "J" in ranks and ((last_card_suit in black_suits and new_card_suit in black_suits) or
-                             (last_card_suit in red_suits and new_card_suit in red_suits)):
+        if "J" in ranks and ((last_card_suit in BLACK_SUITS and new_card_suit in BLACK_SUITS) or
+                             (last_card_suit in RED_SUITS and new_card_suit in RED_SUITS)):
             return True
         elif new_card_rank == "Д":
             return True
@@ -380,6 +461,8 @@ class Game:
         return False
 
     def is_it_sticky(self):
+        """The condition is checked to see if you can "stick" another card to the previous move.
+        Returns the boolean value."""
         last_card = self.get_last_card()
         new_card = self.text
         last_card_rank = last_card[0]
@@ -391,8 +474,8 @@ class Game:
                 return True and self.cards_sticky
             elif last_card_rank in ["2", "6"] and (last_card_suit == new_card_suit or new_card_rank == "Д"):
                 return True
-            elif new_card_rank == "J" and ((last_card_suit in black_suits and new_card_suit in black_suits) or
-                                           (last_card_suit in red_suits and new_card_suit in red_suits)):
+            elif new_card_rank == "J" and ((last_card_suit in BLACK_SUITS and new_card_suit in BLACK_SUITS) or
+                                           (last_card_suit in RED_SUITS and new_card_suit in RED_SUITS)):
                 return True and (self.cards_sticky or last_card_rank in ["2", "6"])
         else:
             if last_card_rank == new_card_rank:
@@ -400,13 +483,14 @@ class Game:
             last_card_rank = self.pre_joker_card()[0]
             if last_card_rank == new_card_rank:
                 return True and self.cards_sticky
-            elif last_card_rank in ["2", "6"] and ((last_card_suit in black_suits and new_card_suit in black_suits) or
-                                                   (last_card_suit in red_suits and new_card_suit in red_suits) or
+            elif last_card_rank in ["2", "6"] and ((last_card_suit in BLACK_SUITS and new_card_suit in BLACK_SUITS) or
+                                                   (last_card_suit in RED_SUITS and new_card_suit in RED_SUITS) or
                                                    new_card_rank == "Д" or new_card_rank == last_card_rank):
                 return True
         return False
 
     def is_it_ok_card(self):
+        """The condition is checked to see if the card used by the player is suitable. Returns the boolean value."""
         if self.get_move_card_count() == 0 or self.who_move == self.who_will_move:
             return self.is_it_relevant()
         else:
@@ -414,7 +498,7 @@ class Game:
 
     def am_i_admin(self):
         for i in bot.get_chat_administrators(self.chat_id):
-            if i.user.username == name_bot:
+            if i.user.username == NAME_BOT:
                 return True
         return False
 
@@ -475,7 +559,7 @@ class Game:
         hand = self.users[str(user_id)].hand
         hand.sort()
         markup.add(*hand)
-        keyboard = [[key for key in row] for row in keyboard_in_game]
+        keyboard = [[key for key in row] for row in KEYBOARD_IN_GAME]
         if not self.can_end_move():
             keyboard[0].remove("Конец хода")
         if not self.can_take(user_id):
@@ -489,7 +573,7 @@ class Game:
     def gen_keyboard_choice_suit(self):
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True, selective=True)
         user_id = self.who_move
-        keyboard = [card_suits, [key for key in keyboard_in_game[0]], [key for key in keyboard_in_game[1]]]
+        keyboard = [CARD_SUITS, [key for key in KEYBOARD_IN_GAME[0]], [key for key in KEYBOARD_IN_GAME[1]]]
         keyboard[1].remove("Конец хода")
         if not self.can_take(user_id):
             keyboard[1].remove("Беру")
@@ -519,12 +603,12 @@ class Game:
         card_rank = card[0]
         next_player = self.next_player(self.who_will_move)
         next_next_player = self.next_next_player(self.who_will_move)
-        if ((self.type_game == "404" and card in penalty_dict_404) or
-           (self.type_game == "101" and card in penalty_dict_101)):
+        if ((self.type_game == "404" and card in PENALTY_DICT_404) or
+           (self.type_game == "101" and card in PENALTY_DICT_101)):
             if self.type_game == "404":
-                penalty_dict = penalty_dict_404
+                penalty_dict = PENALTY_DICT_404
             else:
-                penalty_dict = penalty_dict_101
+                penalty_dict = PENALTY_DICT_101
             if card_rank == self.pre_used_card(card)[0] and self.pre_used_card(card) not in penalty_dict and\
                     self.get_move_card_count() > 0:
                 cards_amount = self.get_penalty_cards(self.who_will_move, penalty_dict[card])
@@ -590,9 +674,6 @@ class Game:
         self.users[str(self.user_id)].take_card_count = 0
         self.users[str(self.user_id)].want_fold = False
 
-    def rating(self):
-        pass
-
 
 def how_many_cards(num):
     if num == 0:
@@ -618,13 +699,13 @@ def how_many_move(num):
 
 def gen_keyboard_in_game_for_any():
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    markup.row(*keyboard_in_game[1])
+    markup.row(*KEYBOARD_IN_GAME[1])
     return markup
 
 
 def gen_keyboard_new_game():
     markup = types.InlineKeyboardMarkup()
-    keyboard = keyboard_new_game
+    keyboard = KEYBOARD_NEW_GAME
     for row in keyboard:
         buttons = [types.InlineKeyboardButton(text=KEY, callback_data=row[KEY]) for KEY in row]
         markup.row(*buttons)
@@ -632,7 +713,7 @@ def gen_keyboard_new_game():
 
 
 def is_it_card(card):
-    if type(card) == str and card in deck54:
+    if type(card) == str and card in DECK54:
         return True
     else:
         return False
@@ -640,7 +721,7 @@ def is_it_card(card):
 
 def am_i_admin(message):
     for i in bot.get_chat_administrators(message.chat.id):
-        if i.user.username == name_bot:
+        if i.user.username == NAME_BOT:
             return True
     return False
 
@@ -651,13 +732,13 @@ def am_i_admin(message):
 @bot.callback_query_handler(func=lambda call: True if call.data == "/start_game" else False)
 def cmd_start_game(call: types.CallbackQuery):
     game = Game(call.message, from_user=call.from_user)
-    if not game.in_game and len(game.players) in players_range:
+    if not game.in_game and len(game.players) in PLAYERS_RANGE:
         game.start_game()
         player_short_name = game.get_player_short_name(game.who_move)
         answer = f"Игра №{game.games_count + 1} началась!\n\n<b>Ход 1.</b>\nПервым ходит {player_short_name}:"
         bot.edit_message_text(answer, game.chat_id, game.message_id, parse_mode="HTML")
         markup = gen_keyboard_in_game_for_any()
-        bot.send_sticker(game.chat_id, skins[game.deck_skin][game.get_last_card()],
+        bot.send_sticker(game.chat_id, SKINS[game.deck_skin][game.get_last_card()],
                          reply_markup=markup, disable_notification=True)
         game.penalty(game.get_last_card())
         mention = game.gen_mention(game.who_move)
@@ -679,7 +760,7 @@ def cmd_go(call: types.CallbackQuery):
         game.players.append(game.user_id)
         markup = gen_keyboard_new_game()
         answer = "Начинаем новую игру! Вступай!\nОт 2-ух до 8-ми игроков.\nПравила игры: /help\n\nСписок:\n"
-        answer += game.add_players_list()
+        answer += game.players_list()
         bot.edit_message_text(answer, game.chat_id, game.message_id, reply_markup=markup)
     game.dump()
 
@@ -692,7 +773,7 @@ def cmd_pass(call: types.CallbackQuery):
         game.dump()
         markup = gen_keyboard_new_game()
         answer = f"Начинаем новую игру! Вступай!\nОт 2-ух до 8-ми игроков.\nПравила игры: /help\n\nСписок:\n"
-        answer += game.add_players_list()
+        answer += game.players_list()
         bot.edit_message_text(answer, game.chat_id, game.message_id, reply_markup=markup)
 
 
@@ -710,7 +791,7 @@ def cmd_card(message: types.Message):
             game.users[str(game.user_id)].hand.remove(card)
             game.users[str(game.user_id)].move_card_count += 1
             markup = game.gen_keyboard_in_game_selective()
-            bot.send_sticker(game.chat_id, skins[game.deck_skin][card], reply_markup=markup,
+            bot.send_sticker(game.chat_id, SKINS[game.deck_skin][card], reply_markup=markup,
                              reply_to_message_id=game.message_id, disable_notification=True)
             game.penalty(card)
             game.dump()
@@ -822,7 +903,7 @@ def cmd_new_game(message: types.Message):
                  f"От 2-ух до 8-ми игроков.\n" \
                  f"Правила игры: /help\n\n" \
                  f"Список:\n"
-        answer += game.add_players_list()
+        answer += game.players_list()
         bot.send_message(game.chat_id, answer, reply_markup=markup)
     game.dump()
 
@@ -870,7 +951,7 @@ def cmd_fold(message: types.Message):
         bot.delete_message(game.chat_id, game.message_id)
 
 
-@bot.message_handler(content_types=['text'], func=lambda message: True if message.text in card_suits else False)
+@bot.message_handler(content_types=['text'], func=lambda message: True if message.text in CARD_SUITS else False)
 def cmd_choice_suite(message: types.Message):
     game = Game(message)
     if game.in_game and game.can_move() and game.get_move_card_count() != 0:
@@ -891,7 +972,7 @@ def cmd_choice_suite(message: types.Message):
 # РАЗНОЕ:
 @bot.message_handler(commands=["help"])
 def cmd_help(message: types.Message):
-    msg = bot.send_message(message.chat.id, help_text)
+    msg = bot.send_message(message.chat.id, HELP_TEXT)
     if message.chat.type in ["group", "supergroup"]:
         game = Game(message)
         game.messages_to_delete.extend([msg.message_id, message.message_id])
@@ -914,11 +995,11 @@ def cmd_statistics(message: types.Message):
     answer = f""
     if game.in_game:
         answer += f"Идет игра №{game.games_count + 1}.\n"
-        answer += game.add_players_list()
+        answer += game.players_list()
     else:
         answer += f"Сейчас игра завершена.\nИгр сыграно в чате: {game.games_count}.\n"
         answer += f"\nСписок пользователей:\n"
-        answer += game.add_users_list()
+        answer += game.users_list()
     answer += f"\nID стола: {abs(game.chat_id)}.\n"
     msg = bot.send_message(message.chat.id, answer, disable_notification=True, parse_mode="HTML")
     game.messages_to_delete.extend([msg.message_id, game.message_id])
@@ -948,7 +1029,7 @@ def cmd_test(message: types.Message):
 @bot.message_handler(commands=["test_deck"])
 def cmd_test_deck(message: types.Message):
     game = Game(message)
-    for card in test_deck:
+    for card in TEST_DECK:
         game.users[str(game.user_id)].hand.append(card)
     game.users[str(game.user_id)].hand.sort()
     msg = bot.send_message(game.chat_id, f"OK", parse_mode="HTML")
