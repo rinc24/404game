@@ -1,4 +1,3 @@
-# !/usr/bin/env python
 # -*- coding: utf-8 -*-
 import telebot
 from config import TOKEN, PROXY, PATH_DB, PATH_LOG, NAME_BOT

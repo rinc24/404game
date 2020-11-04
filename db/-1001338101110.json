@@ -8,7 +8,7 @@
     "number_of_decks": 2,
     "move": 3,
     "who_move": 184207876,
-    "who_will_move": 184207876,
+    "who_will_move": 1123639174,
     "messages_to_delete": [
         5656,
         5657
@@ -24,7 +24,8 @@
         "4\u2660\ufe0f",
         "4\u2663\ufe0f",
         "6\u2663\ufe0f",
-        "J\u26ab\ufe0f"
+        "J\u26ab\ufe0f",
+        "5\u2663\ufe0f"
     ],
     "not_used": [
         "\u0412\u2666\ufe0f",
@@ -130,7 +131,6 @@
                 "4\u2660\ufe0f",
                 "4\u2666\ufe0f",
                 "4\u2666\ufe0f",
-                "5\u2663\ufe0f",
                 "6\u2660\ufe0f",
                 "6\u2660\ufe0f",
                 "6\u2663\ufe0f",
@@ -151,13 +151,13 @@
                 "\u0422\u2660\ufe0f",
                 "\u0422\u2666\ufe0f"
             ],
-            "move_card_count": 4,
+            "move_card_count": 5,
             "take_card_count": 0,
             "id": 184207876,
             "is_bot": false,
-            "first_name": "\u03b2\u03b1\u03b4u\u03bc",
+            "first_name": "\u0412\u0430\u0434\u0438\u043c",
             "username": "romanovinc",
-            "last_name": null,
+            "last_name": "\u0420\u043e\u043c\u0430\u043d\u043e\u0432",
             "language_code": "ru"
         },
         "1123639174": {
