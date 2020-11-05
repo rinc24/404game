@@ -13,9 +13,9 @@ TOKEN = os.getenv('TOKEN', '1234567890:AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqR')
 PROXY = os.getenv('PROXY', False)  # If your gov blocks telegram, use: "socks5://g404:For404gamE@94.177.201.139:1080".
 PATH_DB = os.getenv('PATH_DB', './db/')
 PATH_LOG = os.getenv('PATH_LOG', './log/')
-NAME_BOT = os.getenv('NAME_BOT', 'game404bot')
 
 bot = telebot.TeleBot(TOKEN)
+NAME_BOT = bot.get_me().username
 
 if PROXY:
     telebot.apihelper.proxy = {'https': PROXY}
