@@ -3,7 +3,7 @@
 Отличается игра большей колодой карт и дополнительными правилами, которые ты можешь запросить у бота командой `/help`.
 
 ## Как играть
-Бот постоянно доступен по нику [@game404bot](tg://resolve?domain=game404bot)
+Бот постоянно доступен по нику [@game404bot](https://t.me/game404bot)
 Для игры необходимо создать групповой чат в telegram и добавить бота.
 После добавления **обязательно** дайте боту права **администратора** группового чата.
 Это необходимо для удаления сервисных сообщений и для возможности обработки сообщений игроков без упоминания бота.
@@ -28,7 +28,7 @@ docker build -t rinc/404game .
 docker run --name=404game --restart=always -d -e TOKEN=1234567890:AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqR rinc/404game
 ```
 Параметр окружения:
-- `-e TOKEN=1234567890:AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqR` **(обязательный)**. Получить его необходимо у [@BotFather](tg://resolve?domain=BotFather) в telegram.
+- `-e TOKEN=1234567890:AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqR` **(обязательный)**. Получить его необходимо у [@BotFather](https://t.me/BotFather) в telegram.
 - `-e PROXY=type://user:password@IP:port` (необязательный).
 Прокси. Если Ваш бот будет запущен на сервере, находящегося в государстве, где блокируют доступ к telegram.
 Вы можете воспользоваться моим собственным прокси-сервером: `-e PROXY=socks5://g404:For404gamE@94.177.201.139:1080`
