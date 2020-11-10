@@ -411,7 +411,7 @@ class Game:
             player_full_name = self.get_player_full_name(user_id)
             string = f"{index}. {player_full_name}"
             if user_id == self.who_move:
-                string = f"<b>" + string + f"</b>\n"
+                string = f"<b><u>" + string + f"</u></b>\n"
             else:
                 string += "\n"
             players_list += string
