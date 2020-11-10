@@ -1029,13 +1029,14 @@ def cmd_statistics(message: types.Message):
 
 @bot.message_handler(content_types=['sticker'])
 def stick_answer(message: types.Message):
-    print(message.chat.username,
+    print(message.chat.title,
           '(' + convert_time(message.date) + '): стикер', message.sticker.emoji,
           ' из набора:', message.sticker.set_name)
-    # bot.send_message(message.chat.id, json.dumps(message.json, indent=4))
+    # bot.send_message(message.chat.id, json.dumps(message.json, indent=4, ensure_ascii=False))
     if message.sticker.set_name == "game404":
         bot.delete_message(message.chat.id, message.message_id)
-    print(message)
+    bot.send_message(message.chat.id, message.sticker.file_id)
+    bot.send_sticker(message.chat.id, message.sticker.file_id)
     # print(bot.get_chat_user(message.chat.id, message.from_user.id).user)
 
 
