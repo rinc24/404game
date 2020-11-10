@@ -173,7 +173,7 @@ class Game:
         self.chosen_suit = chat["chosen_suit"]
         self.users = {user: User(chat["users"][user]) for user in chat["users"]}
         if str(self.user_id) not in self.users:
-            with open(f"{PATH_DB}default_user.json") as db:
+            with open(f"./static/default_user.json") as db:
                 self.users.update({str(self.user_id): User(json.load(db))})
         self.users[str(self.user_id)].update_user(from_user.__dict__)
 
