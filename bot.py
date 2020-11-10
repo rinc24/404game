@@ -1033,11 +1033,10 @@ def stick_answer(message: types.Message):
           '(' + convert_time(message.date) + '): стикер', message.sticker.emoji,
           ' из набора:', message.sticker.set_name)
     # bot.send_message(message.chat.id, json.dumps(message.json, indent=4, ensure_ascii=False))
-    if message.sticker.set_name == "game404":
+    if message.sticker.set_name in DECK_STICKER_PACK_NAMES.values():
         bot.delete_message(message.chat.id, message.message_id)
-    bot.send_message(message.chat.id, message.sticker.file_id)
-    bot.send_sticker(message.chat.id, message.sticker.file_id)
-    # print(bot.get_chat_user(message.chat.id, message.from_user.id).user)
+    # bot.send_message(message.chat.id, message.sticker.file_id)
+    # bot.send_sticker(message.chat.id, message.sticker.file_id)
 
 
 @bot.message_handler(commands=["test"])
@@ -1046,6 +1045,16 @@ def cmd_test(message: types.Message):
     markup = game.gen_keyboard_in_game_selective()
     mention = game.gen_mention(game.user_id)
     bot.send_message(game.chat_id, f"{mention} эта клава для тебя", reply_markup=markup, parse_mode="HTML")
+
+
+@bot.message_handler(commands=["skin"])
+def cmd_skin(message: types.Message):
+    game = Game(message)
+    list_skins = [_ for _ in SKINS.keys()]
+    game.deck_skin = list_skins[list_skins.index(game.deck_skin) - 1]
+    msg = bot.send_message(game.chat_id, f"Колода изменена на: {game.deck_skin}")
+    game.messages_to_delete.extend([msg.message_id, game.message_id])
+    game.dump()
 
 
 @bot.message_handler(commands=["test_deck"])

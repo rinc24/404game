@@ -53,10 +53,66 @@ DECK_ENG = {'10♦️': 'CAACAgIAAxkBAAILGF6ctt4WYPMGOF1FhS6MfGsyfh8GAAKkAAMEyvo
             'J🔴': 'CAACAgIAAxkBAAILHF6ctuFQXDPDxSSoirpUtpyWLmhKAAKmAAMEyvoK89aaA0CJswoYBA',
             'J⚫️': 'CAACAgIAAxkBAAILGl6ctuB4pwZ7tyIva3cayElMmvALAAKlAAMEyvoKQygBGasMVHQYBA'}
 
+DECK_RUS = {'10♦️': 'CAACAgIAAxkBAAJMiF-q95l2QmEqjZBEv1bEle6XGbSPAALdAAMEyvoK5_eRHGcZdaweBA',
+            '2♦️': 'CAACAgIAAxkBAAJMi1-q95wwv8uy_83zb5VW3N_uBDEgAALcAAMEyvoKt7jEHcP0h-weBA',
+            '3♦️': 'CAACAgIAAxkBAAJMjl-q954TjxGU5C09IPKpjJYfbNI2AALbAAMEyvoK0jmu6hHTQ9EeBA',
+            '4♦️': 'CAACAgIAAxkBAAJMkV-q96CgC2qrEWsEK8xa57vxnkqTAALaAAMEyvoK4djRjHMLNeQeBA',
+            '5♦️': 'CAACAgIAAxkBAAJMlF-q96JiUh1JfEdPMc1RQ9UQMpd9AALZAAMEyvoKoEnI1C7erkgeBA',
+            '6♦️': 'CAACAgIAAxkBAAJMl1-q96Pv2De24CcvPbYEQjwP304YAALYAAMEyvoKFKkKbOQ_9mMeBA',
+            '7♦️': 'CAACAgIAAxkBAAJMml-q96ZFnCeajrTA3SgorjOUmw-rAALXAAMEyvoKquqrnXwSkmkeBA',
+            '8♦️': 'CAACAgIAAxkBAAJMnV-q96d_u9YBK5ZJDzYVx4aZvRreAALWAAMEyvoKIXQ34nqQypgeBA',
+            '9♦️': 'CAACAgIAAxkBAAJMoF-q96nAOUEFUvBiZzrC6NPbt3q-AALVAAMEyvoKmiMQCGhIGxUeBA',
+            'Т♦️': 'CAACAgIAAxkBAAJMo1-q97Do17nGrz3y98khmFJOv70gAALvAAMEyvoKDqngWaDzRIQeBA',
+            'В♦️': 'CAACAgIAAxkBAAJMpl-q97t3y7ha4bPcA_ySxXpbdKe9AALrAAMEyvoKJ5JQ7R1NOUAeBA',
+            'Д♦️': 'CAACAgIAAxkBAAJMqV-q974WOSDkBjbXWwMplGaN2DwUAALpAAMEyvoKu03AzddjuGoeBA',
+            'К♦️': 'CAACAgIAAxkBAAJMrF-q97_Qk6zYGESPObv7TXrBMVFbAALqAAMEyvoKaihf500culQeBA',
+            '10♣️': 'CAACAgIAAxkBAAJMr1-q-F889ZOnco7BX48-GKqVAAE5FwAC1AADBMr6Cpx-WuKMyifWHgQ',
+            '2♣️': 'CAACAgIAAxkBAAJMsl-q-GHPQgi3Iw5CdGjFRQV--ArDAALTAAMEyvoKuPsH2F8yqkYeBA',
+            '3♣️': 'CAACAgIAAxkBAAJMtV-q-GIGGTSzczalCVgiMI0hCYMzAALSAAMEyvoKeivKdb4Ep7ceBA',
+            '4♣️': 'CAACAgIAAxkBAAJMuF-q-GTVIAZ3jTxR0IowgPMWxpMMAALRAAMEyvoKE5ApMTzdq9keBA',
+            '5♣️': 'CAACAgIAAxkBAAJMu1-q-GVfSzzQvKsRuk9vIuCmDN_MAALQAAMEyvoKd3MFQlLnC7YeBA',
+            '6♣️': 'CAACAgIAAxkBAAJMvl-q-Gfp3rZ0G0fE9cuxJ4KrnlPbAALPAAMEyvoKu0oB-2ZFPDkeBA',
+            '7♣️': 'CAACAgIAAxkBAAJMwV-q-GlqIXczh8LKz47wxMeKg7SxAALOAAMEyvoKf1bnRxeEtq8eBA',
+            '8♣️': 'CAACAgIAAxkBAAJMxF-q-G0gl6pUqaWOXzQ8lJvUl9bwAALNAAMEyvoKGygdNlSeiCceBA',
+            '9♣️': 'CAACAgIAAxkBAAJMx1-q-HGl3IVajwUgzcrzVZrZoWClAALMAAMEyvoKAsBzOZIVfNEeBA',
+            'Т♣️': 'CAACAgIAAxkBAAJMyl-q-HyiI-gmEN1BVHBpnHAmkF6OAALuAAMEyvoKwwtjCpI--OYeBA',
+            'В♣️': 'CAACAgIAAxkBAAJMzV-q-H7yHG-qZbfHeQdAlAT9Q3KWAALoAAMEyvoK-4ZqSeRpRKweBA',
+            'Д♣️': 'CAACAgIAAxkBAAJM0F-q-INaZhH0htrd5DYKrnfyMUmNAALmAAMEyvoKYCK_lZLDgx8eBA',
+            'К♣️': 'CAACAgIAAxkBAAJM01-q-IbdinrN5EnLdylEJLsM6Jk-AALnAAMEyvoKZy0dEpEmCjEeBA',
+            '10♠️': 'CAACAgIAAxkBAAJM1l-q-I45N3s9vvMCS9d7Tfni30HZAALLAAMEyvoKXQ-ECwpzfvkeBA',
+            '2♠️': 'CAACAgIAAxkBAAJM2V-q-JA5bDaV5MR3GP8yqyih3r0mAALKAAMEyvoKha1Jaz6qV2QeBA',
+            '3♠️': 'CAACAgIAAxkBAAJM3F-q-JJIGwSErrvZXanfwsDquFKgAALJAAMEyvoKFZB95LcOrnseBA',
+            '4♠️': 'CAACAgIAAxkBAAJM31-q-JRjxYliOnZaoBK3DfyA11jbAALIAAMEyvoKRcE9ePLQYs0eBA',
+            '5♠️': 'CAACAgIAAxkBAAJM4l-q-JWL74NfBu3gN_Pad5UXHpIiAALHAAMEyvoKrl9K_m4tiD4eBA',
+            '6♠️': 'CAACAgIAAxkBAAJM5V-q-Jaj7t_WciBdTPLb6p57IhMVAALGAAMEyvoK5lT3_beZDSEeBA',
+            '7♠️': 'CAACAgIAAxkBAAJM6F-q-Jgm7YECorzkwbvvr5HkqhnxAALFAAMEyvoK_HWST0A0DCMeBA',
+            '8♠️': 'CAACAgIAAxkBAAJM61-q-Jqs06YoXRTgBZAc08PX1G0BAALEAAMEyvoKigsofEBqmIEeBA',
+            '9♠️': 'CAACAgIAAxkBAAJM7l-q-JvpCcEn8QMUP4ogER_csbc9AALDAAMEyvoKZOKTUO8SZVweBA',
+            'Т♠️': 'CAACAgIAAxkBAAJM8V-q-KGNkD1OyLGlKJojFAEIKzPvAALtAAMEyvoKnxV5vUw_TTgeBA',
+            'В♠️': 'CAACAgIAAxkBAAJM9F-q-KRSqoAp2hBju2PSXIA1bkMWAALlAAMEyvoKlSSpTZ_JsSceBA',
+            'Д♠️': 'CAACAgIAAxkBAAJM91-q-KeMWZtkaRaTQnz3N9Mwd9KKAALjAAMEyvoK5tbzkEKqTdYeBA',
+            'К♠️': 'CAACAgIAAxkBAAJM-l-q-Kn5SmVXoozHSt8o-2gP3NYCAALkAAMEyvoKhHXu5c6jRzEeBA',
+            '10♥️': 'CAACAgIAAxkBAAJM_V-q-LkZzWOPQFQ8taVR49pBDi0-AALCAAMEyvoKkGtphYOh7sEeBA',
+            '2♥️': 'CAACAgIAAxkBAAJNAAFfqvi6enTdB8XOqw5FjfUJvgABcOYAAsEAAwTK-gqt5vm4AqsssB4E',
+            '3♥️': 'CAACAgIAAxkBAAJNA1-q-Lu5RlpQRUUecGOUISkVmLytAALAAAMEyvoKhx2fMArjnm4eBA',
+            '4♥️': 'CAACAgIAAxkBAAJNBl-q-L0WrgkDWy9i0PKgHh118C2bAAK_AAMEyvoKkEmhgppoZjgeBA',
+            '5♥️': 'CAACAgIAAxkBAAJNCV-q-L9BbpgzdnuzJWJQXj2hn7ktAAK-AAMEyvoK0m1Coj9IvkUeBA',
+            '6♥️': 'CAACAgIAAxkBAAJNDF-q-MAQA4uelRYyElfddODfHLlWAAK9AAMEyvoK9gbYyRGnotgeBA',
+            '7♥️': 'CAACAgIAAxkBAAJND1-q-MK3XezjEaA7soHf7SUWjQxvAAK8AAMEyvoKCnOXhjoQV4QeBA',
+            '8♥️': 'CAACAgIAAxkBAAJNEl-q-MS6dGB5mm49cuEpNU0iTAxeAAK7AAMEyvoKBAqokZgtmJkeBA',
+            '9♥️': 'CAACAgIAAxkBAAJNFV-q-MUXyfJYNHkDY1f1G5YVwe4sAAK6AAMEyvoK1oB_OOcCnBAeBA',
+            'Т♥️': 'CAACAgIAAxkBAAJNGF-q-MnbWcJgggtkjrPyhIYKJWNkAALsAAMEyvoKn2xg0syrUu8eBA',
+            'В♥️': 'CAACAgIAAxkBAAJNG1-q-M5R4lsdTAovMs_z4pFerBMiAALiAAMEyvoKuAmv9hV3ExoeBA',
+            'Д♥️': 'CAACAgIAAxkBAAJNHl-q-NCFiLfE7HmqW8ENTL-zDJdRAALgAAMEyvoK9L5qzLvnbFMeBA',
+            'К♥️': 'CAACAgIAAxkBAAJNIV-q-NIJKaCLGZ69TSrGVr8N2DMiAALhAAMEyvoKl3OGWJt1qIceBA',
+            'J🔴': 'CAACAgIAAxkBAAJNJF-q-ONTCHeS9GxwJQK7drKeamw4AALfAAMEyvoKsKMS7mMOy8MeBA',
+            'J⚫️': 'CAACAgIAAxkBAAJNJ1-q-ORTjSe8UzrmAi0hsR3NZ5UcAALeAAMEyvoKWDmlIbKJcD8eBA'}
+
 CARD_SUITS = ["♥️", "♠️", "♣️", "♦️"]
 BLACK_SUITS = ["⚫️", "♠️", "♣️"]
 RED_SUITS = ["J🔴", "♥️", "♦️"]
-SKINS = {"deck_eng": DECK_ENG}
+SKINS = {"deck_eng": DECK_ENG, "deck_rus": DECK_RUS}
+DECK_STICKER_PACK_NAMES = {"deck_eng": "game404", "deck_rus": "game404rus"}
 DECK54 = [i for i in DECK_ENG.keys()]
 DECK36 = [i for i in DECK_ENG.keys() if i[0] not in ['2', '3', '4', '5', 'J']]
 PLAYERS_RANGE = range(2, 9)
