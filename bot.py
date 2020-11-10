@@ -1,6 +1,6 @@
 import os
 import telebot
-from constant_dict import *
+from static.parameters import *
 from datetime import datetime
 import json
 from telebot import types
@@ -25,10 +25,10 @@ def convert_time(time_unix):
     return datetime.utcfromtimestamp(time_unix + 18000).strftime('%d.%m.%Y %H:%M:%S')
 
 
-with open(f"{PATH_DB}default_user.json") as file:
+with open(f"static/default_user.json") as file:
     default_user = json.load(file)
 
-with open(f"{PATH_DB}default_chat.json") as file:
+with open(f"static/default_chat.json") as file:
     default_chat = json.load(file)
 
 
@@ -203,7 +203,7 @@ class Game:
         for user_id in self.users:
             chat["users"].update({user_id: self.users[user_id].dict()})
         with open(f"{PATH_DB}{self.chat_id}.json", "w+") as db:
-            json.dump(chat, db, indent=4)
+            json.dump(chat, db, indent=4, ensure_ascii=False)
 
     def can_move(self, user_id=None):
         """Returns True if a player can make a move."""
