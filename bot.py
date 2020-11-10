@@ -25,10 +25,10 @@ def convert_time(time_unix):
     return datetime.utcfromtimestamp(time_unix + 18000).strftime('%d.%m.%Y %H:%M:%S')
 
 
-with open(f"static/default_user.json") as file:
+with open("./static/default_user.json") as file:
     default_user = json.load(file)
 
-with open(f"static/default_chat.json") as file:
+with open("./static/default_chat.json") as file:
     default_chat = json.load(file)
 
 
