@@ -6,4 +6,4 @@ PySocks==1.7.1
 pyTelegramBotAPI==3.7.3
 requests==2.24.0
 six==1.15.0
-urllib3==1.25.11
+urllib3==1.26.5
