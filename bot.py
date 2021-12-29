@@ -38,16 +38,7 @@ def logger(chat_id, text, user_name=""):
 
 
 class User:
-    """This is User Class
-    Methods:
-        dict
-        update_user
-    """
     def __init__(self, user):
-        """
-        :param user: Dict from JSON.
-        :return: User object.
-        """
         for key in default_user.keys():
             if key not in user.keys():
                 user[key] = default_user[key]
@@ -91,51 +82,6 @@ class User:
 
 
 class Game:
-    """This is Game Class
-    Methods:
-        dump
-        can_move
-        next_move
-        new_game
-        go
-        pass_game
-        start_game
-        fold
-        used_to_not_used
-        take_card
-        get_penalty_cards
-        get_last_card
-        get_hand
-        get_rating
-        get_take_card_count
-        get_move_card_count
-        get_first_name
-        get_last_name
-        get_username
-        get_player_full_name
-        get_player_short_name
-        players_list
-        users_list
-        pre_joker_card
-        pre_used_card
-        is_it_relevant
-        is_it_sticky
-        is_it_ok_card
-        am_i_admin
-        can_take
-        can_end_move
-        next_player
-        next_next_player
-        end_move
-        gen_keyboard_in_game_selective
-        gen_keyboard_choice_suit
-        gen_mention
-        delete_bot_messages
-        penalty
-        winners_list
-        end_of_game
-        new_winner
-    """
     def __init__(self, message: types.Message, from_user=None):
         if from_user is None:
             from_user = message.from_user

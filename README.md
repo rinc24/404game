@@ -31,7 +31,6 @@ docker run --name=404game --restart=always -d -e TOKEN=1234567890:AaBbCcDdEeFfGg
 - `-e TOKEN=1234567890:AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqR` **(обязательный)**. Получить его необходимо у [@BotFather](https://t.me/BotFather) в telegram.
 - `-e PROXY=type://user:password@IP:port` (необязательный).
 Прокси. Если Ваш бот будет запущен на сервере, находящегося в государстве, где блокируют доступ к telegram.
-Вы можете воспользоваться моим собственным прокси-сервером: `-e PROXY=socks5://g404:For404gamE@94.177.201.139:1080`
 - `-e PATH_DB=./db/` и `-e PATH_LOG=./log/` (необязательные) -- путь до хранилища данных (файлы JSON) и хранилища логов соответственно.
 
 Отмечу, что при запуске `docker run` можно передавать несколько флагов `-e`
