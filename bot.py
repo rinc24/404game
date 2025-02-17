@@ -1,28 +1,46 @@
-import os
-import telebot
-from static.parameters import *
-from datetime import datetime
 import json
-from telebot import types
-from random import shuffle
+import os
+from datetime import datetime
 from os.path import exists
+from random import shuffle
 
+import telebot
+from telebot import types
+
+from static.parameters import (
+    BLACK_SUITS,
+    CARD_SUITS,
+    DECK36,
+    DECK54,
+    DECK_STICKER_PACK_NAMES,
+    HELP_TEXT,
+    KEYBOARD_IN_GAME,
+    KEYBOARD_NEW_GAME,
+    PENALTY_DICT_101,
+    PENALTY_DICT_404,
+    PLAYERS_RANGE,
+    RED_SUITS,
+    SKINS,
+    TEST_DECK,
+)
 
 # Get ENV
-TOKEN = os.getenv('TOKEN', '1234567890:AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqR')
-PROXY = os.getenv('PROXY', False)  # If your gov blocks telegram, use: "socks5://g404:For404gamE@94.177.201.139:1080".
-PATH_DB = os.getenv('PATH_DB', './db/')
-PATH_LOG = os.getenv('PATH_LOG', './log/')
+TOKEN = os.getenv("TOKEN", "1234567890:AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqR")
+PROXY = os.getenv(
+    "PROXY", False
+)  # If your gov blocks telegram, use: "socks5://g404:For404gamE@94.177.201.139:1080".
+PATH_DB = os.getenv("PATH_DB", "./db/")
+PATH_LOG = os.getenv("PATH_LOG", "./log/")
 
 bot = telebot.TeleBot(TOKEN)
 NAME_BOT = bot.get_me().username
 
 if PROXY:
-    telebot.apihelper.proxy = {'https': PROXY}
+    telebot.apihelper.proxy = {"https": PROXY}
 
 
 def convert_time(time_unix):
-    return datetime.utcfromtimestamp(time_unix + 18000).strftime('%d.%m.%Y %H:%M:%S')
+    return datetime.utcfromtimestamp(time_unix + 18000).strftime("%d.%m.%Y %H:%M:%S")
 
 
 with open("./static/default_user.json") as file:
@@ -34,7 +52,13 @@ with open("./static/default_chat.json") as file:
 
 def logger(chat_id, text, user_name=""):
     with open(f"{PATH_LOG}{chat_id}", "a") as log:
-        log.write(datetime.now().strftime("%d.%m.%Y %H:%M:%S ") + user_name + ": " + text + "\n")
+        log.write(
+            datetime.now().strftime("%d.%m.%Y %H:%M:%S ")
+            + user_name
+            + ": "
+            + text
+            + "\n"
+        )
 
 
 class User:
@@ -69,7 +93,7 @@ class User:
             "first_name": self.first_name,
             "username": self.username,
             "last_name": self.last_name,
-            "language_code": self.language_code
+            "language_code": self.language_code,
         }
 
     def update_user(self, user):
@@ -119,7 +143,7 @@ class Game:
         self.chosen_suit = chat["chosen_suit"]
         self.users = {user: User(chat["users"][user]) for user in chat["users"]}
         if str(self.user_id) not in self.users:
-            with open(f"./static/default_user.json") as db:
+            with open("./static/default_user.json") as db:
                 self.users.update({str(self.user_id): User(json.load(db))})
         self.users[str(self.user_id)].update_user(from_user.__dict__)
 
@@ -144,7 +168,7 @@ class Game:
             "winners": self.winners,
             "want_new_game": self.want_new_game,
             "chosen_suit": self.chosen_suit,
-            "users": {}
+            "users": {},
         }
         for user_id in self.users:
             chat["users"].update({user_id: self.users[user_id].dict()})
@@ -240,7 +264,12 @@ class Game:
         self.used = new_used
         self.used.reverse()
         shuffle(self.not_used)
-        bot.send_message(self.chat_id, "<b><i>Перемешали колоду.</i></b>", disable_notification=True, parse_mode="HTML")
+        bot.send_message(
+            self.chat_id,
+            "<b><i>Перемешали колоду.</i></b>",
+            disable_notification=True,
+            parse_mode="HTML",
+        )
 
     def take_card(self):
         """The player takes a card from an unused deck when there is nothing to make a move."""
@@ -357,7 +386,7 @@ class Game:
             player_full_name = self.get_player_full_name(user_id)
             string = f"{index}. {player_full_name}"
             if user_id == self.who_move:
-                string = f"<b><u>" + string + f"</u></b>\n"
+                string = "<b><u>" + string + "</u></b>\n"
             else:
                 string += "\n"
             players_list += string
@@ -398,8 +427,10 @@ class Game:
         new_card_rank = new_card[0]
         new_card_suit = new_card[-2:4]
         ranks = [last_card_rank, new_card_rank]
-        if "J" in ranks and ((last_card_suit in BLACK_SUITS and new_card_suit in BLACK_SUITS) or
-                             (last_card_suit in RED_SUITS and new_card_suit in RED_SUITS)):
+        if "J" in ranks and (
+            (last_card_suit in BLACK_SUITS and new_card_suit in BLACK_SUITS)
+            or (last_card_suit in RED_SUITS and new_card_suit in RED_SUITS)
+        ):
             return True
         elif new_card_rank == "Д":
             return True
@@ -425,10 +456,14 @@ class Game:
         if last_card_rank != "J":
             if last_card_rank == new_card_rank:
                 return True and self.cards_sticky
-            elif last_card_rank in ["2", "6"] and (last_card_suit == new_card_suit or new_card_rank == "Д"):
+            elif last_card_rank in ["2", "6"] and (
+                last_card_suit == new_card_suit or new_card_rank == "Д"
+            ):
                 return True
-            elif new_card_rank == "J" and ((last_card_suit in BLACK_SUITS and new_card_suit in BLACK_SUITS) or
-                                           (last_card_suit in RED_SUITS and new_card_suit in RED_SUITS)):
+            elif new_card_rank == "J" and (
+                (last_card_suit in BLACK_SUITS and new_card_suit in BLACK_SUITS)
+                or (last_card_suit in RED_SUITS and new_card_suit in RED_SUITS)
+            ):
                 return True and (self.cards_sticky or last_card_rank in ["2", "6"])
         else:
             if last_card_rank == new_card_rank:
@@ -436,9 +471,12 @@ class Game:
             last_card_rank = self.pre_joker_card()[0]
             if last_card_rank == new_card_rank:
                 return True and self.cards_sticky
-            elif last_card_rank in ["2", "6"] and ((last_card_suit in BLACK_SUITS and new_card_suit in BLACK_SUITS) or
-                                                   (last_card_suit in RED_SUITS and new_card_suit in RED_SUITS) or
-                                                   new_card_rank == "Д" or new_card_rank == last_card_rank):
+            elif last_card_rank in ["2", "6"] and (
+                (last_card_suit in BLACK_SUITS and new_card_suit in BLACK_SUITS)
+                or (last_card_suit in RED_SUITS and new_card_suit in RED_SUITS)
+                or new_card_rank == "Д"
+                or new_card_rank == last_card_rank
+            ):
                 return True
         return False
 
@@ -457,7 +495,10 @@ class Game:
             return True
         elif self.get_last_card()[0] == "J" and self.pre_joker_card()[0] in ("2", "6"):
             return True
-        elif self.get_take_card_count(user_id) == 0 and self.get_move_card_count(user_id) == 0:
+        elif (
+            self.get_take_card_count(user_id) == 0
+            and self.get_move_card_count(user_id) == 0
+        ):
             return True
         return False
 
@@ -492,22 +533,35 @@ class Game:
         self.delete_bot_messages()
         self.chosen_suit = chosen_suit
         bot.delete_message(self.chat_id, self.message_id)
-        if self.get_last_card()[0] == "9" and len(self.users[str(self.user_id)].hand) == 0:
+        if (
+            self.get_last_card()[0] == "9"
+            and len(self.users[str(self.user_id)].hand) == 0
+        ):
             self.new_winner()
         elif self.get_last_card()[0] == "J":
-            if self.pre_joker_card()[0] == "9" and len(self.users[str(self.user_id)].hand) == 0:
+            if (
+                self.pre_joker_card()[0] == "9"
+                and len(self.users[str(self.user_id)].hand) == 0
+            ):
                 self.new_winner()
         if len(self.players) == 1:
             self.end_of_game()
             return None
         markup = self.gen_keyboard_in_game_selective()
         mention = self.gen_mention(self.who_move)
-        bot.send_message(self.chat_id, f"<b>Ход {self.move}.</b>\n{mention}:",
-                         reply_markup=markup, parse_mode="HTML", disable_notification=True)
+        bot.send_message(
+            self.chat_id,
+            f"<b>Ход {self.move}.</b>\n{mention}:",
+            reply_markup=markup,
+            parse_mode="HTML",
+            disable_notification=True,
+        )
 
     def gen_keyboard_in_game_selective(self):
         """Returns the current player's personal keyboard."""
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=6, selective=True)
+        markup = types.ReplyKeyboardMarkup(
+            resize_keyboard=True, row_width=6, selective=True
+        )
         user_id = self.who_move
         hand = self.users[str(user_id)].hand
         hand.sort()
@@ -527,7 +581,11 @@ class Game:
         """Returns the keyboard with the suits for selection."""
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True, selective=True)
         user_id = self.who_move
-        keyboard = [CARD_SUITS, [key for key in KEYBOARD_IN_GAME[0]], [key for key in KEYBOARD_IN_GAME[1]]]
+        keyboard = [
+            CARD_SUITS,
+            [key for key in KEYBOARD_IN_GAME[0]],
+            [key for key in KEYBOARD_IN_GAME[1]],
+        ]
         keyboard[1].remove("Конец хода")
         if not self.can_take(user_id):
             keyboard[1].remove("Беру")
@@ -560,25 +618,36 @@ class Game:
         card_rank = card[0]
         next_player = self.next_player(self.who_will_move)
         next_next_player = self.next_next_player(self.who_will_move)
-        if ((self.type_game == "404" and card in PENALTY_DICT_404) or
-           (self.type_game == "101" and card in PENALTY_DICT_101)):
+        if (self.type_game == "404" and card in PENALTY_DICT_404) or (
+            self.type_game == "101" and card in PENALTY_DICT_101
+        ):
             if self.type_game == "404":
                 penalty_dict = PENALTY_DICT_404
             else:
                 penalty_dict = PENALTY_DICT_101
-            if card_rank == self.pre_used_card(card)[0] and self.pre_used_card(card) not in penalty_dict and\
-                    self.get_move_card_count() > 0:
-                cards_amount = self.get_penalty_cards(self.who_will_move, penalty_dict[card])
+            if (
+                card_rank == self.pre_used_card(card)[0]
+                and self.pre_used_card(card) not in penalty_dict
+                and self.get_move_card_count() > 0
+            ):
+                cards_amount = self.get_penalty_cards(
+                    self.who_will_move, penalty_dict[card]
+                )
                 self.who_will_move = next_player
                 mention = self.gen_mention(self.who_will_move)
             else:
                 cards_amount = self.get_penalty_cards(next_player, penalty_dict[card])
                 self.who_will_move = next_next_player
                 mention = self.gen_mention(next_player)
-            bot.send_message(self.chat_id, f"<i>{mention} {how_many_cards(cards_amount)}</i>",
-                             disable_notification=True, parse_mode="HTML")
-        elif (card_rank in ["3", "5", "1", "Д", "1", "9", "В", "К"] and
-              (self.get_move_card_count() == 1 or card_rank != self.pre_used_card(card)[0])):
+            bot.send_message(
+                self.chat_id,
+                f"<i>{mention} {how_many_cards(cards_amount)}</i>",
+                disable_notification=True,
+                parse_mode="HTML",
+            )
+        elif card_rank in ["3", "5", "1", "Д", "1", "9", "В", "К"] and (
+            self.get_move_card_count() == 1 or card_rank != self.pre_used_card(card)[0]
+        ):
             self.who_will_move = next_player
         elif card_rank in ["2", "6"]:
             pass
@@ -626,10 +695,13 @@ class Game:
         """A method that turns a player into a winner."""
         self.winners.append(self.user_id)
         self.players.remove(self.user_id)
-        bot.send_message(self.chat_id,
-                         f"<i><b>{self.get_player_short_name()} выходит "
-                         f"заняв {self.winners.index(self.user_id) + 1}-ю позицию.</b></i>",
-                         parse_mode="HTML", disable_notification=True)
+        bot.send_message(
+            self.chat_id,
+            f"<i><b>{self.get_player_short_name()} выходит "
+            f"заняв {self.winners.index(self.user_id) + 1}-ю позицию.</b></i>",
+            parse_mode="HTML",
+            disable_notification=True,
+        )
         self.users[str(self.user_id)].hand = []
         self.users[str(self.user_id)].take_card_count = 0
         self.users[str(self.user_id)].want_fold = False
@@ -671,14 +743,16 @@ def gen_keyboard_new_game():
     markup = types.InlineKeyboardMarkup()
     keyboard = KEYBOARD_NEW_GAME
     for row in keyboard:
-        buttons = [types.InlineKeyboardButton(text=KEY, callback_data=row[KEY]) for KEY in row]
+        buttons = [
+            types.InlineKeyboardButton(text=KEY, callback_data=row[KEY]) for KEY in row
+        ]
         markup.row(*buttons)
     return markup
 
 
 def is_it_card(card):
     """Checks if the text matches the card."""
-    if type(card) == str and card in DECK54:
+    if isinstance(card, str) and card in DECK54:
         return True
     else:
         return False
@@ -696,7 +770,9 @@ def am_i_admin(message):
 # КОЛБЕКИ НОВОЙ ИГРЫ:
 
 
-@bot.callback_query_handler(func=lambda call: True if call.data == "/start_game" else False)
+@bot.callback_query_handler(
+    func=lambda call: True if call.data == "/start_game" else False
+)
 def cmd_start_game(call: types.CallbackQuery):
     game = Game(call.message, from_user=call.from_user)
     if not game.in_game and len(game.players) in PLAYERS_RANGE:
@@ -705,8 +781,12 @@ def cmd_start_game(call: types.CallbackQuery):
         answer = f"Игра №{game.games_count + 1} началась!\n\n<b>Ход 1.</b>\nПервым ходит {player_short_name}:"
         bot.edit_message_text(answer, game.chat_id, game.message_id, parse_mode="HTML")
         markup = gen_keyboard_in_game_for_any()
-        bot.send_sticker(game.chat_id, SKINS[game.deck_skin][game.get_last_card()],
-                         reply_markup=markup, disable_notification=True)
+        bot.send_sticker(
+            game.chat_id,
+            SKINS[game.deck_skin][game.get_last_card()],
+            reply_markup=markup,
+            disable_notification=True,
+        )
         game.penalty(game.get_last_card())
         mention = game.gen_mention(game.who_move)
         if game.get_last_card()[0] not in ["2", "6"]:
@@ -714,8 +794,13 @@ def cmd_start_game(call: types.CallbackQuery):
         else:
             answer = f"{mention}, придется крыть."
         markup = game.gen_keyboard_in_game_selective()
-        msg = bot.send_message(game.chat_id, answer, reply_markup=markup,
-                               parse_mode="HTML", disable_notification=True)
+        msg = bot.send_message(
+            game.chat_id,
+            answer,
+            reply_markup=markup,
+            parse_mode="HTML",
+            disable_notification=True,
+        )
         game.messages_to_delete.append(msg.message_id)
         game.dump()
 
@@ -728,7 +813,9 @@ def cmd_go(call: types.CallbackQuery):
         markup = gen_keyboard_new_game()
         answer = "Начинаем новую игру! Вступай!\nОт 2-ух до 8-ми игроков.\nПравила игры: /help\n\nСписок:\n"
         answer += game.players_list()
-        bot.edit_message_text(answer, game.chat_id, game.message_id, reply_markup=markup)
+        bot.edit_message_text(
+            answer, game.chat_id, game.message_id, reply_markup=markup
+        )
     game.dump()
 
 
@@ -739,16 +826,21 @@ def cmd_pass(call: types.CallbackQuery):
         game.players.remove(game.user_id)
         game.dump()
         markup = gen_keyboard_new_game()
-        answer = f"Начинаем новую игру! Вступай!\nОт 2-ух до 8-ми игроков.\nПравила игры: /help\n\nСписок:\n"
+        answer = "Начинаем новую игру! Вступай!\nОт 2-ух до 8-ми игроков.\nПравила игры: /help\n\nСписок:\n"
         answer += game.players_list()
-        bot.edit_message_text(answer, game.chat_id, game.message_id, reply_markup=markup)
+        bot.edit_message_text(
+            answer, game.chat_id, game.message_id, reply_markup=markup
+        )
 
 
 # ОБРАБОТКА КНОПОК:
 
 
-@bot.message_handler(content_types=['text'], func=lambda message: is_it_card(message.text)
-                     and message.chat.type in ["group", "supergroup"])
+@bot.message_handler(
+    content_types=["text"],
+    func=lambda message: is_it_card(message.text)
+    and message.chat.type in ["group", "supergroup"],
+)
 def cmd_card(message: types.Message):
     game = Game(message)
     card = game.text
@@ -758,15 +850,23 @@ def cmd_card(message: types.Message):
             game.users[str(game.user_id)].hand.remove(card)
             game.users[str(game.user_id)].move_card_count += 1
             markup = game.gen_keyboard_in_game_selective()
-            bot.send_sticker(game.chat_id, SKINS[game.deck_skin][card], reply_markup=markup,
-                             reply_to_message_id=game.message_id, disable_notification=True)
+            bot.send_sticker(
+                game.chat_id,
+                SKINS[game.deck_skin][card],
+                reply_markup=markup,
+                reply_to_message_id=game.message_id,
+                disable_notification=True,
+            )
             game.penalty(card)
             game.dump()
     bot.delete_message(game.chat_id, game.message_id)
 
 
-@bot.message_handler(content_types=['text'], func=lambda message: message.text == "Конец хода"
-                     and message.chat.type in ["group", "supergroup"])
+@bot.message_handler(
+    content_types=["text"],
+    func=lambda message: message.text == "Конец хода"
+    and message.chat.type in ["group", "supergroup"],
+)
 def cmd_end_move(message: types.Message):
     game = Game(message)
     if game.can_move() and game.in_game:
@@ -775,14 +875,23 @@ def cmd_end_move(message: types.Message):
                 markup = game.gen_keyboard_in_game_selective()
                 bot.delete_message(game.chat_id, game.message_id)
                 mention = game.gen_mention(game.user_id)
-                msg = bot.send_message(game.chat_id, f"<i>{mention}, возьми карту из колоды!</i>",
-                                       reply_markup=markup, disable_notification=True, parse_mode="HTML")
+                msg = bot.send_message(
+                    game.chat_id,
+                    f"<i>{mention}, возьми карту из колоды!</i>",
+                    reply_markup=markup,
+                    disable_notification=True,
+                    parse_mode="HTML",
+                )
                 game.messages_to_delete.append(msg.message_id)
                 game.dump()
             else:
-                bot.send_message(game.chat_id, f"<i>{game.get_player_short_name()}"
-                                               f" взял карту и не нашел чем сходить.</i>",
-                                 disable_notification=True, parse_mode="HTML")
+                bot.send_message(
+                    game.chat_id,
+                    f"<i>{game.get_player_short_name()}"
+                    f" взял карту и не нашел чем сходить.</i>",
+                    disable_notification=True,
+                    parse_mode="HTML",
+                )
                 game.who_will_move = game.next_player(game.who_move)
                 game.end_move(game.chosen_suit)
                 game.dump()
@@ -796,16 +905,26 @@ def cmd_end_move(message: types.Message):
                 markup = game.gen_keyboard_in_game_selective()
                 bot.delete_message(game.chat_id, game.message_id)
                 player_short_name = game.get_player_short_name(game.user_id)
-                msg = bot.send_message(game.chat_id, f"<i>{player_short_name}, надо крыть!</i>",
-                                       reply_markup=markup, disable_notification=True, parse_mode="HTML")
+                msg = bot.send_message(
+                    game.chat_id,
+                    f"<i>{player_short_name}, надо крыть!</i>",
+                    reply_markup=markup,
+                    disable_notification=True,
+                    parse_mode="HTML",
+                )
                 game.messages_to_delete.append(msg.message_id)
                 game.dump()
             elif last_card[0] == "Д":
                 markup = game.gen_keyboard_choice_suit()
                 mention = game.gen_mention(game.user_id)
                 bot.delete_message(game.chat_id, game.message_id)
-                msg = bot.send_message(game.chat_id, f"<i>{mention}, выбери масть.</i>",
-                                       reply_markup=markup, disable_notification=True, parse_mode="HTML")
+                msg = bot.send_message(
+                    game.chat_id,
+                    f"<i>{mention}, выбери масть.</i>",
+                    reply_markup=markup,
+                    disable_notification=True,
+                    parse_mode="HTML",
+                )
                 game.messages_to_delete.append(msg.message_id)
                 game.dump()
             else:
@@ -815,8 +934,11 @@ def cmd_end_move(message: types.Message):
         bot.delete_message(game.chat_id, game.message_id)
 
 
-@bot.message_handler(content_types=['text'], func=lambda message: message.text == "Беру"
-                     and message.chat.type in ["group", "supergroup"])
+@bot.message_handler(
+    content_types=["text"],
+    func=lambda message: message.text == "Беру"
+    and message.chat.type in ["group", "supergroup"],
+)
 def cmd_take_card(message: types.Message):
     game = Game(message)
     if game.can_move(game.user_id) and game.in_game and game.can_take(game.user_id):
@@ -824,59 +946,99 @@ def cmd_take_card(message: types.Message):
         markup = game.gen_keyboard_in_game_selective()
         mention = game.gen_mention(game.user_id)
         bot.delete_message(game.chat_id, game.message_id)
-        msg = bot.send_message(game.chat_id, f"<i>{mention} берет карту.</i>",
-                               parse_mode="HTML", reply_markup=markup, disable_notification=True)
+        msg = bot.send_message(
+            game.chat_id,
+            f"<i>{mention} берет карту.</i>",
+            parse_mode="HTML",
+            reply_markup=markup,
+            disable_notification=True,
+        )
         game.messages_to_delete.append(msg.message_id)
         game.dump()
     else:
         bot.delete_message(game.chat_id, game.message_id)
 
 
-@bot.message_handler(content_types=['text'], func=lambda message:
-                     message.text in ["/new_game", "Новая игра", "/new_game@game404bot", "/start", "/start@game404bot"]
-                     and message.chat.type in ["group", "supergroup"])
+@bot.message_handler(
+    content_types=["text"],
+    func=lambda message: message.text
+    in [
+        "/new_game",
+        "Новая игра",
+        "/new_game@game404bot",
+        "/start",
+        "/start@game404bot",
+    ]
+    and message.chat.type in ["group", "supergroup"],
+)
 def cmd_new_game(message: types.Message):
     game = Game(message)
     if game.in_game and game.user_id in game.want_new_game:
-        msg = bot.send_message(game.chat_id, "Новая игра начнется если этого захочет кто-то еще.",
-                               disable_notification=True)
+        msg = bot.send_message(
+            game.chat_id,
+            "Новая игра начнется если этого захочет кто-то еще.",
+            disable_notification=True,
+        )
         game.messages_to_delete.append(msg.message_id)
         markup = game.gen_keyboard_in_game_selective()
         mention = game.gen_mention(game.who_move)
-        msg = bot.send_message(game.chat_id, f"Новая игра еще не началась. \n"
-                                             f"{mention}, продолжай ход.",
-                               reply_markup=markup, parse_mode="HTML", disable_notification=True)
+        msg = bot.send_message(
+            game.chat_id,
+            f"Новая игра еще не началась. \n{mention}, продолжай ход.",
+            reply_markup=markup,
+            parse_mode="HTML",
+            disable_notification=True,
+        )
         game.messages_to_delete.append(msg.message_id)
     elif game.in_game and len(game.want_new_game) == 0:
         game.want_new_game.append(game.user_id)
-        msg = bot.send_message(game.chat_id, 'Запрос на новую игру принят. \nКто-то еще согласен?\n'
-                                             'Жми "Новая игра" или команду /new_game.', disable_notification=True)
+        msg = bot.send_message(
+            game.chat_id,
+            "Запрос на новую игру принят. \nКто-то еще согласен?\n"
+            'Жми "Новая игра" или команду /new_game.',
+            disable_notification=True,
+        )
         game.messages_to_delete.append(msg.message_id)
         mention = game.gen_mention(game.who_move)
         markup = game.gen_keyboard_in_game_selective()
-        msg = bot.send_message(game.chat_id, f"Новая игра еще не началась. \n"
-                                             f"{mention}, продолжай ход.",
-                               reply_markup=markup, parse_mode="HTML", disable_notification=True)
+        msg = bot.send_message(
+            game.chat_id,
+            f"Новая игра еще не началась. \n{mention}, продолжай ход.",
+            reply_markup=markup,
+            parse_mode="HTML",
+            disable_notification=True,
+        )
         game.messages_to_delete.append(msg.message_id)
     else:
         markup = types.ReplyKeyboardRemove()
-        msg = bot.send_message(game.chat_id, "<i>Удаление прошлой игры...</i>",
-                               reply_markup=markup, disable_notification=True, parse_mode="HTML")
+        msg = bot.send_message(
+            game.chat_id,
+            "<i>Удаление прошлой игры...</i>",
+            reply_markup=markup,
+            disable_notification=True,
+            parse_mode="HTML",
+        )
         game.messages_to_delete.append(msg.message_id)
         game.new_game()
         game.players.append(game.user_id)
         markup = gen_keyboard_new_game()
-        answer = f"Начинаем новую игру! Вступай!\n" \
-                 f"От 2-ух до 8-ми игроков.\n" \
-                 f"Правила игры: /help\n\n" \
-                 f"Список:\n"
+        answer = (
+            "Начинаем новую игру! Вступай!\n"
+            "От 2-ух до 8-ми игроков.\n"
+            "Правила игры: /help\n\n"
+            "Список:\n"
+        )
         answer += game.players_list()
         bot.send_message(game.chat_id, answer, reply_markup=markup)
     game.dump()
 
 
-@bot.message_handler(content_types=['text'], func=lambda message: True
-                     if message.text in ["/fold", "Сдаюсь", "/fold@game404bot"] else False)
+@bot.message_handler(
+    content_types=["text"],
+    func=lambda message: True
+    if message.text in ["/fold", "Сдаюсь", "/fold@game404bot"]
+    else False,
+)
 def cmd_fold(message: types.Message):
     game = Game(message)
     if game.in_game and game.user_id in game.players:
@@ -885,16 +1047,25 @@ def cmd_fold(message: types.Message):
             bot.delete_message(game.chat_id, game.message_id)
             markup = types.ReplyKeyboardRemove(selective=True)
             mention = game.gen_mention()
-            bot.send_message(game.chat_id, f"<i>{mention} вышел из игры.</i>",
-                             reply_markup=markup, parse_mode="HTML", disable_notification=True)
+            bot.send_message(
+                game.chat_id,
+                f"<i>{mention} вышел из игры.</i>",
+                reply_markup=markup,
+                parse_mode="HTML",
+                disable_notification=True,
+            )
             if len(game.players) == 1:
                 game.end_of_game()
             else:
                 game.delete_bot_messages()
                 mention = game.gen_mention(game.who_move)
-                msg = bot.send_message(game.chat_id, f"Игра продолжается. \n"
-                                                     f"{mention}, продолжай:",
-                                       reply_markup=markup, parse_mode="HTML", disable_notification=True)
+                msg = bot.send_message(
+                    game.chat_id,
+                    f"Игра продолжается. \n{mention}, продолжай:",
+                    reply_markup=markup,
+                    parse_mode="HTML",
+                    disable_notification=True,
+                )
                 game.messages_to_delete.append(msg.message_id)
             game.dump()
         else:
@@ -904,21 +1075,34 @@ def cmd_fold(message: types.Message):
             else:
                 markup = gen_keyboard_in_game_for_any()
             mention = game.get_player_short_name()
-            msg = bot.send_message(game.chat_id,
-                                   f'{mention}, ты точно хочешь сдаться?\nОтправь еще раз "/fold" или "Сдаюсь"',
-                                   reply_markup=markup, parse_mode="HTML", disable_notification=True)
+            msg = bot.send_message(
+                game.chat_id,
+                f'{mention}, ты точно хочешь сдаться?\nОтправь еще раз "/fold" или "Сдаюсь"',
+                reply_markup=markup,
+                parse_mode="HTML",
+                disable_notification=True,
+            )
             markup = game.gen_keyboard_in_game_selective()
             mention = game.gen_mention(game.who_move)
-            msg2 = bot.send_message(game.chat_id, f"Игра продолжается. \n"
-                                                  f"{mention}, продолжай:",
-                                    reply_markup=markup, parse_mode="HTML", disable_notification=True)
-            game.messages_to_delete.extend([game.message_id, msg.message_id, msg2.message_id])
+            msg2 = bot.send_message(
+                game.chat_id,
+                f"Игра продолжается. \n{mention}, продолжай:",
+                reply_markup=markup,
+                parse_mode="HTML",
+                disable_notification=True,
+            )
+            game.messages_to_delete.extend(
+                [game.message_id, msg.message_id, msg2.message_id]
+            )
             game.dump()
     else:
         bot.delete_message(game.chat_id, game.message_id)
 
 
-@bot.message_handler(content_types=['text'], func=lambda message: True if message.text in CARD_SUITS else False)
+@bot.message_handler(
+    content_types=["text"],
+    func=lambda message: True if message.text in CARD_SUITS else False,
+)
 def cmd_choice_suite(message: types.Message):
     game = Game(message)
     if game.in_game and game.can_move() and game.get_move_card_count() != 0:
@@ -928,8 +1112,13 @@ def cmd_choice_suite(message: types.Message):
             last_card = game.get_last_card()
         if last_card[0] == "Д":
             markup = gen_keyboard_in_game_for_any()
-            bot.send_message(game.chat_id, f"<i>{game.get_player_short_name()} заказывает:</i> {game.text}",
-                             reply_markup=markup, disable_notification=True, parse_mode="HTML")
+            bot.send_message(
+                game.chat_id,
+                f"<i>{game.get_player_short_name()} заказывает:</i> {game.text}",
+                reply_markup=markup,
+                disable_notification=True,
+                parse_mode="HTML",
+            )
             game.end_move(game.text)
             game.dump()
     else:
@@ -946,38 +1135,49 @@ def cmd_help(message: types.Message):
         game.dump()
 
 
-@bot.message_handler(content_types=['text'], func=lambda message:
-                     message.text in ["/start", "/start@game404bot"]
-                     and message.chat.type not in ["group", "supergroup"])
+@bot.message_handler(
+    content_types=["text"],
+    func=lambda message: message.text in ["/start", "/start@game404bot"]
+    and message.chat.type not in ["group", "supergroup"],
+)
 def cmd_start(message: types.Message):
-    bot.send_message(message.chat.id, "Игра работает только в групповом чате.\n"
-                                      "Собери друзей и добавь бота в группу, которая будет являться игровым столом.\n"
-                                      "ОБЯЗАТЕЛЬНО с правами администратора для автоудаления ненужных сообщений.\n"
-                                      "Здесь Вы можете ознакомиться с правилами игры отправив /help")
+    bot.send_message(
+        message.chat.id,
+        "Игра работает только в групповом чате.\n"
+        "Собери друзей и добавь бота в группу, которая будет являться игровым столом.\n"
+        "ОБЯЗАТЕЛЬНО с правами администратора для автоудаления ненужных сообщений.\n"
+        "Здесь Вы можете ознакомиться с правилами игры отправив /help",
+    )
 
 
 @bot.message_handler(commands=["statistics"])
 def cmd_statistics(message: types.Message):
     game = Game(message)
-    answer = f""
+    answer = ""
     if game.in_game:
         answer += f"Идет игра №{game.games_count + 1}.\n"
         answer += game.players_list()
     else:
         answer += f"Сейчас игра завершена.\nИгр сыграно в чате: {game.games_count}.\n"
-        answer += f"\nСписок пользователей:\n"
+        answer += "\nСписок пользователей:\n"
         answer += game.users_list()
     answer += f"\nID стола: {abs(game.chat_id)}.\n"
-    msg = bot.send_message(message.chat.id, answer, disable_notification=True, parse_mode="HTML")
+    msg = bot.send_message(
+        message.chat.id, answer, disable_notification=True, parse_mode="HTML"
+    )
     game.messages_to_delete.extend([msg.message_id, game.message_id])
     game.dump()
 
 
-@bot.message_handler(content_types=['sticker'])
+@bot.message_handler(content_types=["sticker"])
 def stick_answer(message: types.Message):
-    print(message.chat.title,
-          '(' + convert_time(message.date) + '): стикер', message.sticker.emoji,
-          ' из набора:', message.sticker.set_name)
+    print(
+        message.chat.title,
+        "(" + convert_time(message.date) + "): стикер",
+        message.sticker.emoji,
+        " из набора:",
+        message.sticker.set_name,
+    )
     # bot.send_message(message.chat.id, json.dumps(message.json, indent=4, ensure_ascii=False))
     if message.sticker.set_name in DECK_STICKER_PACK_NAMES.values():
         bot.delete_message(message.chat.id, message.message_id)
@@ -990,7 +1190,12 @@ def cmd_test(message: types.Message):
     game = Game(message)
     markup = game.gen_keyboard_in_game_selective()
     mention = game.gen_mention(game.user_id)
-    bot.send_message(game.chat_id, f"{mention} эта клава для тебя", reply_markup=markup, parse_mode="HTML")
+    bot.send_message(
+        game.chat_id,
+        f"{mention} эта клава для тебя",
+        reply_markup=markup,
+        parse_mode="HTML",
+    )
 
 
 @bot.message_handler(commands=["skin"])
@@ -1009,7 +1214,7 @@ def cmd_test_deck(message: types.Message):
     for card in TEST_DECK:
         game.users[str(game.user_id)].hand.append(card)
     game.users[str(game.user_id)].hand.sort()
-    msg = bot.send_message(game.chat_id, f"OK", parse_mode="HTML")
+    msg = bot.send_message(game.chat_id, "OK", parse_mode="HTML")
     game.messages_to_delete.append(msg.message_id)
     game.dump()
 
