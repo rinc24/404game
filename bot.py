@@ -1219,4 +1219,4 @@ def cmd_test_deck(message: types.Message):
     game.dump()
 
 
-bot.polling(none_stop=True, interval=0)
+bot.infinity_polling(timeout=20)  # сам переподключается после обрывов связи с Telegram

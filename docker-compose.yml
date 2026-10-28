@@ -1,0 +1,12 @@
+# Телеграм-бот 404game. Пересборка: docker compose build && docker compose up -d
+services:
+  bot:
+    image: rinc/404game
+    build: .
+    container_name: 404game
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      # бот пишет состояние игр (db/<чат>.json) и логи (log/<чат>); без томов папок нет и обработчики падают
+      - ./data/db:/app/db
+      - ./data/log:/app/log
